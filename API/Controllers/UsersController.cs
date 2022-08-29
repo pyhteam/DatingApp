@@ -1,5 +1,8 @@
-﻿using API.Data;
+﻿using System.Net;
+using API.Controllers.Base;
+using API.Data;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,9 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : ApiBaseController
     {
         private readonly DataContext _context;
         private readonly ILogger<UsersController> _logger;
@@ -27,6 +28,7 @@ namespace API.Controllers
         }
 
         // GET api/<UsersController>/5
+        [Authorize]
         [HttpGet]
         [Route("get/{id}")]
         public async Task<AppUser> Get(int id)
