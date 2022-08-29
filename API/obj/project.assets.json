@@ -2231,11 +2231,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "e:\\FPT\\EBS.DMS\\Build an app with ASPNET Core and Angular from scratch\\DatingApp\\API\\API.csproj",
+      "projectUniqueName": "E:\\FPT\\EBS.DMS\\Build an app with ASPNET Core and Angular from scratch\\DatingApp\\API\\API.csproj",
       "projectName": "API",
-      "projectPath": "e:\\FPT\\EBS.DMS\\Build an app with ASPNET Core and Angular from scratch\\DatingApp\\API\\API.csproj",
+      "projectPath": "E:\\FPT\\EBS.DMS\\Build an app with ASPNET Core and Angular from scratch\\DatingApp\\API\\API.csproj",
       "packagesPath": "C:\\Users\\pyhte\\.nuget\\packages\\",
-      "outputPath": "e:\\FPT\\EBS.DMS\\Build an app with ASPNET Core and Angular from scratch\\DatingApp\\API\\obj\\",
+      "outputPath": "E:\\FPT\\EBS.DMS\\Build an app with ASPNET Core and Angular from scratch\\DatingApp\\API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\pyhte\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -2245,6 +2245,7 @@
         "net6.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

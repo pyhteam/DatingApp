@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "4RjFK+yPmz6oLZmI8kFxw0jrwnTpxbj9atzIFP7fNqKjLTG8UlsRpc+VIH+SLDqwEtOnzAjqcAGOeS51RChFRg==",
+  "dgSpecHash": "NelSsrO5rJFtPcXOYdUmZ8hGLVEhdCGsEYqAY5GP9BChdDygrm8zYwfLcScf3u5fVUxh2pU1TuWreDLhaLWGZQ==",
   "success": true,
-  "projectFilePath": "e:\\FPT\\EBS.DMS\\Build an app with ASPNET Core and Angular from scratch\\DatingApp\\API\\API.csproj",
+  "projectFilePath": "E:\\FPT\\EBS.DMS\\Build an app with ASPNET Core and Angular from scratch\\DatingApp\\API\\API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\pyhte\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\pyhte\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
