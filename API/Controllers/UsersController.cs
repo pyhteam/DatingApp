@@ -28,7 +28,7 @@ namespace API.Controllers
         }
 
         // GET api/<UsersController>/5
-        [Authorize]
+        
         [HttpGet]
         [Route("get/{id}")]
         public async Task<AppUser> Get(int id)
