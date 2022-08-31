@@ -24,7 +24,7 @@ namespace API.Controllers
         }
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register(RegisterDto registerDto)
+        public async Task<ActionResult> Register(RegisterDto registerDto)
         {
             if (!ModelState.IsValid)
             {
@@ -53,7 +53,7 @@ namespace API.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login(LoginDto loginDto)
+        public async Task<ActionResult> Login(LoginDto loginDto)
         {
             if (!ModelState.IsValid)
             {
@@ -62,7 +62,7 @@ namespace API.Controllers
             var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == loginDto.UserName.ToLower());
             if (user == null)
             {
-                return Unauthorized();
+                return BadRequest("Password or username is incorrect");
             }
             using var hmac = new HMACSHA512(user.PasswordSalt);
             var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
