@@ -2,11 +2,16 @@
 using Microsoft.OpenApi.Models;
 using API.Extensions;
 using API.Middleware;
+using API.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddApplicationServices(builder.Configuration);
+
+
+
 // route to lowercase
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers();
@@ -45,7 +50,27 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 
+
 var app = builder.Build();
+
+#region  Seed Data And Migrate
+using var scope = builder.Services.BuildServiceProvider().CreateScope();
+var services = scope.ServiceProvider;
+try
+{
+    var context = services.GetRequiredService<DataContext>();
+    context.Database.Migrate();
+    if (Seed.SeedUsers(context) <= 0)
+    {
+        System.Console.WriteLine("No users seeded");
+    }
+}
+catch (System.Exception ex)
+{
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "An error occured during migration");
+}
+#endregion
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

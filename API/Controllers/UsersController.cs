@@ -1,7 +1,10 @@
 ﻿using System.Net;
 using API.Controllers.Base;
 using API.Data;
+using API.DTOs;
 using API.Entities;
+using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,36 +13,53 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
+    [Authorize]
     public class UsersController : ApiBaseController
     {
-        private readonly DataContext _context;
-        private readonly ILogger<UsersController> _logger;
-        public UsersController(DataContext context, ILogger<UsersController> logger)
+
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
+        public UsersController(IUserRepository userRepository, IMapper mapper)
         {
-            _context = context;
-            _logger = logger;
+            _userRepository = userRepository;
+            _mapper = mapper;
         }
+
         // GET: api/<UsersController>
         [HttpGet]
         [Route("get-all")]
-        public async Task<IEnumerable<AppUser>> Get()
+        public async Task<ActionResult<IEnumerable<MemberDto>>> Get()
         {
-            return await _context.Users.ToListAsync();
+            var users = await _userRepository.GetUsersAsync();
+            var usersToReturn = _mapper.Map<IEnumerable<MemberDto>>(users);
+            return Ok(usersToReturn);
         }
 
         // GET api/<UsersController>/5
-        
+
         [HttpGet]
         [Route("get/{id}")]
-        public async Task<AppUser> Get(int id)
+        public async Task<ActionResult<MemberDto>> Get(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _userRepository.GetUserByIdAsync(id);
             if (user == null)
             {
-                _logger.LogInformation($"User with id {id} not found.");
-                return null;
+                return NotFound();
             }
-            return user;
+            return Ok(user);
+        }
+        // get by username
+        [HttpGet]
+        [Route("get-by-username/{userName}")]
+        public async Task<ActionResult<MemberDto>> Get(string userName)
+        {
+            var user = await _userRepository.GetUserByUserNameAsync(userName);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var userToReturn = _mapper.Map<MemberDto>(user);
+            return Ok(userToReturn);
         }
 
         // POST api/<UsersController>

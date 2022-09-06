@@ -1,1 +1,81 @@
-<p>member-detail works!</p>
+<div *ngIf="member" class="row">
+  <div class="col-4">
+    <div class="card">
+      <img class="card-img-top img-thumbnail" [src]="member.photoUrl" [alt]="member.username" />
+      <div class="card-body">
+        <div>
+          <strong>Location: </strong>
+          <p>{{member.city}}, {{member.country}}</p>
+        </div>
+        <div>
+          <strong>Age: </strong>
+          <p>{{member.age}}</p>
+        </div>
+        <div>
+          <strong>Member since: </strong>
+          <p>{{member.created | date}}</p>
+        </div>
+        <div>
+          <strong>Member Last active: </strong>
+          <p>{{member.lastActive | date }}</p>
+        </div>
+
+      </div>
+      <div class="card-footer">
+        <div class="btn-group d-flex">
+          <button class="btn btn-primary">Like</button>
+          <button class="btn btn-success">Message</button>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+  <div class="col-8">
+    <tabset class="member-tabset">
+      <tab heading="About {{member.knowAs}}">
+        <h4>Description</h4>
+        <p>{{member.introduction}}</p>
+        <h4>Looking for</h4>
+        <p>{{member.lookingFor}}</p>
+      </tab>
+      <tab heading="Interests">
+        <h4>Interests</h4>
+        <p>{{member.interests}}</p>
+      </tab>
+      <tab heading="Photos">
+        <h4>Photos</h4>
+        <div class="row">
+          <div class="col-4" *ngFor="let photo of member.photos">
+            <div class="card">
+              <img class="card-img-top img-thumbnail" [src]="photo.url" [alt]="photo.description" />
+              <div class="card-footer">
+                <div class="btn-group d-flex">
+                  <button class="btn btn-primary">Set Main</button>
+                  <button class="btn btn-danger">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tab>
+      <!-- tab message -->
+      <tab heading="Messages">
+        <h4>Messages</h4>
+        <div class="row">
+          <div class="col-4" *ngFor="let message of member.messages">
+            <div class="card">
+              <img class="card-img-top img-thumbnail" [src]="message.url" [alt]="message.description" />
+              <div class="card-footer">
+                <div class="btn-group d-flex">
+                  <button class="btn btn-primary">Set Main</button>
+                  <button class="btn btn-danger">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tab>
+    </tabset>
+  </div>
+</div>
