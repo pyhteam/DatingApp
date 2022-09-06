@@ -13,7 +13,12 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
     }),
     // ngx-bootstrap tabs
     TabsModule.forRoot(),
+    // ngx-gallery
   ],
-  exports: [BsDropdownModule, ToastrModule, TabsModule],
+  exports: [
+    BsDropdownModule,
+    ToastrModule,
+    TabsModule
+  ]
 })
 export class SharedModule {}
