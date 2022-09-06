@@ -44,20 +44,7 @@
         <p>{{member.interests}}</p>
       </tab>
       <tab heading="Photos">
-        <h4>Photos</h4>
-        <div class="row">
-          <div class="col-4" *ngFor="let photo of member.photos">
-            <div class="card">
-              <img class="card-img-top img-thumbnail" [src]="photo.url" [alt]="photo.description" />
-              <div class="card-footer">
-                <div class="btn-group d-flex">
-                  <button class="btn btn-primary">Set Main</button>
-                  <button class="btn btn-danger">Delete</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
       </tab>
       <!-- tab message -->
       <tab heading="Messages">
