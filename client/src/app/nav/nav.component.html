@@ -22,7 +22,7 @@
           Welecom {{user.userName | titlecase}}
         </a>
         <div class="dropdown-menu mt-3" *dropdownMenu>
-          <a class="dropdown-item" href="#">Profile</a>
+          <a class="dropdown-item" routerLink="/user/edit">Edit Profile</a>
           <a class="dropdown-item" href="#">Settings</a>
           <a class="dropdown-item" (click)="logout()">Logout</a>
         </div>

@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Security.Claims;
 using API.Controllers.Base;
 using API.Data;
 using API.DTOs;
@@ -69,9 +70,28 @@ namespace API.Controllers
         }
 
         // PUT api/<UsersController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        [Route("update")]
+        public async Task<ActionResult> Put(MemberUpdateDto memberUpdateDto)
         {
+            string username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _userRepository.GetUserByUserNameAsync(username);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            user.City = memberUpdateDto.City;
+            user.Country = memberUpdateDto.Country;
+            user.Interests = memberUpdateDto.Interests;
+            user.Introduction = memberUpdateDto.Introduction;
+            user.LookingFor = memberUpdateDto.LookingFor;
+
+            _userRepository.Update(user);
+            if (await _userRepository.SaveAllAsync())
+            {
+                return NoContent();
+            }
+            return BadRequest("Failed to update user");
         }
 
         // DELETE api/<UsersController>/5

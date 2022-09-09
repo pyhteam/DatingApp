@@ -45,9 +45,17 @@ namespace API.Interfaces
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public void Update(AppUser user)
+        public void Update(MemberDto user)
         {
-            _context.Entry(user).State = EntityState.Modified;
+            var userFromDb = _context.Users.Find(user.Id);
+            userFromDb.City = user.City;
+            userFromDb.Country = user.Country;
+            userFromDb.Introduction = user.Introduction;
+            userFromDb.Interests = user.Interests;
+            userFromDb.LookingFor = user.LookingFor;
+
+            _context.Entry(userFromDb).State = EntityState.Modified;
+
 
         }
     }

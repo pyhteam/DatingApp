@@ -17,4 +17,8 @@ export class MembersService {
   getByUsername(username: string) {
     return this.http.get<Member>(this.baseUrl + 'get-by-username/' + username);
   }
+
+  updateMember(member: Member) {
+    return this.http.put(this.baseUrl + 'update', member);
+  }
 }

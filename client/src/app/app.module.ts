@@ -23,6 +23,8 @@ import { SharedModule } from './_modules/shared.module';
 import { ErrorInterceptor } from './_interceptors/error.interceptor';
 import { MemberCardComponent } from './member/member-card/member-card.component';
 import { JwtInterceptor } from './_interceptors/jwt.interceptor';
+import { MemberEditComponent } from './members/member-edit/member-edit.component';
+import { LoadingInterceptor } from './_interceptors/loading.interceptor';
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,6 +36,7 @@ import { JwtInterceptor } from './_interceptors/jwt.interceptor';
     ListComponent,
     MessagesComponent,
     MemberCardComponent,
+    MemberEditComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,6 +51,8 @@ import { JwtInterceptor } from './_interceptors/jwt.interceptor';
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     // custom request interceptor JWT
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    // custom request interceptor for loading
+    { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
 })
