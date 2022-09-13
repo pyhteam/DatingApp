@@ -21,4 +21,11 @@ export class MembersService {
   updateMember(member: Member) {
     return this.http.put(this.baseUrl + 'update', member);
   }
+
+  setMainPhoto(photoId: number) {
+    return this.http.put(this.baseUrl + 'set-main-photo/' + photoId, {});
+  }
+  deletePhoto(photoId: number) {
+    return this.http.delete(this.baseUrl + 'delete-photo/' + photoId);
+  }
 }

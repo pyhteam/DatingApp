@@ -47,7 +47,8 @@ namespace API.Controllers
             return Ok(new UserDto
             {
                 UserName = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user),
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
             });
         }
 
@@ -59,7 +60,9 @@ namespace API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == loginDto.UserName.ToLower());
+            var user = await _context.Users
+            .Include(p => p.Photos)
+            .SingleOrDefaultAsync(x => x.UserName == loginDto.UserName.ToLower());
             if (user == null)
             {
                 return BadRequest("Password or username is incorrect");
@@ -76,7 +79,8 @@ namespace API.Controllers
             return Ok(new UserDto
             {
                 UserName = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user),
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
             });
         }
         private async Task<bool> UserExists(string username)
