@@ -5,6 +5,7 @@ namespace API.Interfaces
 {
     public interface IUserRepository
     {
+        
         void Update(MemberDto user);
         Task<bool> SaveAllAsync();
         Task<IEnumerable<MemberDto>> GetUsersAsync();

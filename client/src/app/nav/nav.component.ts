@@ -3,6 +3,7 @@ import { AccountService } from '../_services/account.service';
 import { Route, Router } from '@angular/router';
 // toastr
 import { ToastrService } from 'ngx-toastr';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-nav',
@@ -11,20 +12,29 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class NavComponent implements OnInit {
   model: any = {};
-
+  loginForm: FormGroup;
   constructor(
     public accountService: AccountService,
     private router: Router,
-    private toastr: ToastrService
-    ) {}
+    private toastr: ToastrService,
+    private formBuider: FormBuilder
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.intializeForm();
+  }
+
+  intializeForm() {
+    this.loginForm = this.formBuider.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required],
+    });
+  }
 
   login() {
-    this.accountService.login(this.model).subscribe(
+    this.accountService.login(this.loginForm.value).subscribe(
       (next) => {
         this.router.navigateByUrl('/members');
-        
       },
       (error) => {
         this.toastr.error(error.error);
