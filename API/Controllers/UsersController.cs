@@ -1,10 +1,9 @@
-﻿using System.Net;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using API.Controllers.Base;
-using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Helper;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -32,11 +31,15 @@ namespace API.Controllers
         // GET: api/<UsersController>
         [HttpGet]
         [Route("get-all")]
-        public async Task<ActionResult<IEnumerable<MemberDto>>> Get()
+        public async Task<ActionResult<IEnumerable<MemberDto>>> Get([FromQuery] UserParams userParmas)
         {
-            var users = await _userRepository.GetUsersAsync();
-            var usersToReturn = _mapper.Map<IEnumerable<MemberDto>>(users);
-            return Ok(usersToReturn);
+            var user = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
+            userParmas.CurrentUsername = User.GetUsername();
+            var users = await _userRepository.GetUsersAsync(userParmas);
+            Response.AddPaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
+            return Ok(users);
+
+
         }
 
         // GET api/<UsersController>/5

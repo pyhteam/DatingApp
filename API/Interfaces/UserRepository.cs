@@ -1,6 +1,7 @@
 using API.Data;
 using API.DTOs;
 using API.Entities;
+using API.Helper;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
@@ -32,12 +33,29 @@ namespace API.Interfaces
             .SingleOrDefaultAsync(x => x.Username == userName);
         }
 
-        public async Task<IEnumerable<MemberDto>> GetUsersAsync()
+        public async Task<PagedList<MemberDto>> GetUsersAsync(UserParams userParams)
         {
-            return await _context.Users
-            .Include(x => x.Photos)
-            .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
-            .ToListAsync();
+            var query = _context.Users
+            .AsQueryable();
+            query = query.Where(x => x.UserName != userParams.CurrentUsername);
+            if (!string.IsNullOrEmpty(userParams.Gender))
+            {
+                query = query.Where(x => x.Gender == userParams.Gender);
+            }
+            // sort 
+            query = userParams.OrderBy switch
+            {
+                "created" => query.OrderByDescending(x => x.Created),
+                _ => query.OrderByDescending(x => x.LastActive)
+            };
+            // filter by age
+            var minDob = DateTime.Today.AddYears(-userParams.MaxAge - 1);
+            var maxDob = DateTime.Today.AddYears(-userParams.MinAge);
+            query = query.Where(x => x.DateOfBirth >= minDob && x.DateOfBirth <= maxDob);
+
+            return await PagedList<MemberDto>.CreateAsync(query.ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+            .AsNoTracking(), userParams.PageNumber, userParams.PageSize);
+
         }
 
         public async Task<bool> SaveAllAsync()
@@ -53,10 +71,16 @@ namespace API.Interfaces
             userFromDb.Introduction = user.Introduction;
             userFromDb.Interests = user.Interests;
             userFromDb.LookingFor = user.LookingFor;
-
             _context.Entry(userFromDb).State = EntityState.Modified;
 
 
+        }
+
+        public void UpdateLastActive(string username)
+        {
+            var user = _context.Users.SingleOrDefault(x => x.UserName == username);
+            user.LastActive = DateTime.Now;
+            _context.Entry(user).State = EntityState.Modified;
         }
     }
 }

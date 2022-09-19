@@ -35,7 +35,7 @@
           alt="{{ user.userName }}"
         />
         <a class="dropdown-toggle text-light ml-2" dropdownToggle>
-          Welecom {{ user.userName | titlecase }}
+          Welecom {{ user.knownAs | titlecase }}
         </a>
         <div class="dropdown-menu mt-3" *dropdownMenu>
           <a class="dropdown-item" routerLink="/user/edit">Edit Profile</a>
