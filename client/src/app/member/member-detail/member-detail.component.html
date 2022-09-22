@@ -1,50 +1,55 @@
 <div *ngIf="member" class="row">
   <div class="col-4">
     <div class="card">
-      <img class="card-img-top img-thumbnail" [src]="member.photoUrl" [alt]="member.username" />
+      <img
+        class="card-img-top img-thumbnail"
+        [src]="member.photoUrl"
+        [alt]="member.username"
+      />
       <div class="card-body">
         <div>
           <strong>Location: </strong>
-          <p>{{member.city}}, {{member.country}}</p>
+          <p>{{ member.city }}, {{ member.country }}</p>
         </div>
         <div>
           <strong>Age: </strong>
-          <p>{{member.age}}</p>
+          <p>{{ member.age }}</p>
         </div>
         <div>
           <strong>Member since: </strong>
-          <p>{{member.created | date}}</p>
+          <p>{{ member.created | date: "dd MM yyyy" }}</p>
         </div>
         <div>
           <strong>Member Last active: </strong>
-          <p>{{member.lastActive | date }}</p>
+          <p>{{ member.lastActive | timeago }}</p>
         </div>
-
       </div>
       <div class="card-footer">
         <div class="btn-group d-flex">
           <button class="btn btn-primary">Like</button>
           <button class="btn btn-success">Message</button>
         </div>
-
-
       </div>
     </div>
   </div>
   <div class="col-8">
     <tabset class="member-tabset">
-      <tab heading="About {{member.knowAs}}">
+      <tab heading="About {{ member.knowAs }}">
         <h4>Description</h4>
-        <p>{{member.introduction}}</p>
+        <p>{{ member.introduction }}</p>
         <h4>Looking for</h4>
-        <p>{{member.lookingFor}}</p>
+        <p>{{ member.lookingFor }}</p>
       </tab>
       <tab heading="Interests">
         <h4>Interests</h4>
-        <p>{{member.interests}}</p>
+        <p>{{ member.interests }}</p>
       </tab>
       <tab heading="Photos">
-        <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
+        <ngx-gallery
+          [options]="galleryOptions"
+          [images]="galleryImages"
+          class="ngx-gallery"
+        ></ngx-gallery>
       </tab>
       <!-- tab message -->
       <tab heading="Messages">
@@ -52,7 +57,11 @@
         <div class="row">
           <div class="col-4" *ngFor="let message of member.messages">
             <div class="card">
-              <img class="card-img-top img-thumbnail" [src]="message.url" [alt]="message.description" />
+              <img
+                class="card-img-top img-thumbnail"
+                [src]="message.url"
+                [alt]="message.description"
+              />
               <div class="card-footer">
                 <div class="btn-group d-flex">
                   <button class="btn btn-primary">Set Main</button>
