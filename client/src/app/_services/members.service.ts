@@ -19,7 +19,10 @@ export class MembersService {
   user: User;
   userParams: UserParams;
 
-  constructor(private http: HttpClient, private accountService: AccountService) {
+  constructor(
+    private http: HttpClient,
+    private accountService: AccountService
+  ) {
     this.accountService.currentUser$.pipe(take(1)).subscribe((user) => {
       this.user = user;
       this.userParams = new UserParams(user);
@@ -77,6 +80,19 @@ export class MembersService {
   setMainPhoto(photoId: number) {
     return this.http.put(this.baseUrl + 'set-main-photo/' + photoId, {});
   }
+
+  addLike(username: string) {
+    return this.http.post(environment.API_URL + 'likes/' + username, {});
+  }
+  getLikes(predicate: string, pageNumber, pageSize) {
+    let params = this.getPaginationHeaders(pageNumber, pageSize);
+    params = params.append('predicate', predicate);
+    return this.getPaginatedResult<Partial<Member[]>>(
+      environment.API_URL + 'likes',
+      params
+    );
+  }
+
   deletePhoto(photoId: number) {
     return this.http.delete(this.baseUrl + 'delete-photo/' + photoId);
   }

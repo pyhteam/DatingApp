@@ -19,7 +19,7 @@ export class ErrorInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
     return next.handle(request).pipe(
-      catchError((err) => { 
+      catchError((err) => {
         if (err) {
           switch (err.status) {
             case 400:
@@ -31,8 +31,12 @@ export class ErrorInterceptor implements HttpInterceptor {
                   }
                 }
                 throw modalStateErrors.flat();
-              } else {
+              } else if(typeof(err.error) === 'object') {
                 this.toastr.error(err.statusText, err.status);
+
+              }
+              else {
+                this.toastr.error(err.error, err.status);
               }
               break;
             case 401:
