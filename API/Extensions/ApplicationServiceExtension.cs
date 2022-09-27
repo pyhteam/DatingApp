@@ -17,10 +17,11 @@ namespace API.Extensions
             services.AddScoped<LogUserActive>();
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<ILikesRepository, LikesRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
             // Add AutoMapper
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
-            
-            
+
+
             // Add ConnectionString
             services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")
