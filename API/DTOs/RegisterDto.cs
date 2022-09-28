@@ -13,7 +13,8 @@ namespace API.DTOs
         [Required]
         public string Gender { get; set; }
         [Required]
-        public string DateOfBirth { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime DateOfBirth { get; set; }
         [Required]
         public string City { get; set; }
         [Required]

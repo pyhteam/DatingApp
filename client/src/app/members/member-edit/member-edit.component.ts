@@ -12,14 +12,16 @@ import { MembersService } from '../../_services/members.service';
   styleUrls: ['./member-edit.component.css'],
 })
 export class MemberEditComponent implements OnInit {
-  @ViewChild ('editForm') editForm;
+  @ViewChild('editForm') editForm;
   member: Member;
   user: User;
 
   // su kien khi nguoi dung thoat khoi trang toi trang web khac luon
   // leave site
-  @HostListener('window:beforeunload', ['$event']) unloadNotification($event: any){
-    if(this.editForm.dirty){
+  @HostListener('window:beforeunload', ['$event']) unloadNotification(
+    $event: any
+  ) {
+    if (this.editForm.dirty) {
       $event.returnValue = true;
     }
   }
@@ -39,21 +41,18 @@ export class MemberEditComponent implements OnInit {
 
   loadMember() {
     this.meberService
-      .getByUsername(this.user.userName)
+      .getByUsername(this.user.username)
       .subscribe((member) => (this.member = member));
   }
 
   //  edit member
-  updateMemner(){
-    this.meberService.updateMember(this.member).subscribe(
-      result => {
-        this.toastr.success('Update successfully');
-        this.editForm.reset(this.member);
-      }
-    ),
-    error => {
-      this.toastr.error(error);
-    }
-
+  updateMemner() {
+    this.meberService.updateMember(this.member).subscribe((result) => {
+      this.toastr.success('Update successfully');
+      this.editForm.reset(this.member);
+    }),
+      (error) => {
+        this.toastr.error(error);
+      };
   }
 }

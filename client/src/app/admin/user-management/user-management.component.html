@@ -1,0 +1,50 @@
+<div class="row">
+  <!-- table -->
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header card-header-primary">
+        <h4 class="card-title">Users</h4>
+        <p class="card-category">Here is a subtitle for this table</p>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table">
+            <thead class="text-primary">
+              <th>ID</th>
+              <th>Username</th>
+              <th>Roles</th>
+              <th>Actions</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of users">
+                <td>
+                  {{ user.id }}
+                </td>
+                <td>
+                  {{ user.username }}
+                </td>
+                <td>
+                  {{ user.roles }}
+                </td>
+                <td>
+                  <button
+                    (click)="openRolesModal(user)"
+                    class="btn btn-primary btn-sm mr-2"
+                  >
+                    Edit Roles
+                  </button>
+                  <button
+                    class="btn btn-danger btn-sm"
+                    (click)="deleteUser(user)"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

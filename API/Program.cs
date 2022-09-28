@@ -4,6 +4,8 @@ using API.Extensions;
 using API.Middleware;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using API.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,13 +61,15 @@ var services = scope.ServiceProvider;
 try
 {
     var context = services.GetRequiredService<DataContext>();
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
     context.Database.Migrate();
-    if (Seed.SeedUsers(context) <= 0)
+    if (await Seed.SeedUsers(userManager, roleManager) <= 0)
     {
-        System.Console.WriteLine("No users seeded");
+        Console.WriteLine("No users seeded");
     }
 }
-catch (System.Exception ex)
+catch (Exception ex)
 {
     var logger = services.GetRequiredService<ILogger<Program>>();
     logger.LogError(ex, "An error occured during migration");

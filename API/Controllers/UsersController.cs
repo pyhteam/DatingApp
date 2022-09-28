@@ -29,6 +29,7 @@ namespace API.Controllers
 
 
         // GET: api/<UsersController>
+
         [HttpGet]
         [Route("get-all")]
         public async Task<ActionResult<IEnumerable<MemberDto>>> Get([FromQuery] UserParams userParmas)
@@ -80,7 +81,7 @@ namespace API.Controllers
         [Route("update")]
         public async Task<ActionResult> Put(MemberUpdateDto memberUpdateDto)
         {
-            string username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            string username = User.FindFirst(ClaimTypes.Name)?.Value;
             var user = await _userRepository.GetUserByUserNameAsync(username);
             if (user == null)
             {

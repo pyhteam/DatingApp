@@ -22,6 +22,15 @@
               >Messages</a
             >
           </li>
+          <li class="nav-item">
+            <a
+              *appHasRole="['Admin', 'Moderator']"
+              class="nav-link btn btn-primary btn-sm"
+              routerLink="/admin"
+              routerLinkActive="active"
+              >Admin Panel</a
+            >
+          </li>
         </ng-container>
       </ul>
       <div
@@ -35,7 +44,7 @@
           alt="{{ user.userName }}"
         />
         <a class="dropdown-toggle text-light ml-2" dropdownToggle>
-          Welecom {{ user.knownAs | titlecase }}
+          Welecom {{ user.knownAs || user.userName | titlecase }}
         </a>
         <div class="dropdown-menu mt-3" *dropdownMenu>
           <a class="dropdown-item" routerLink="/user/edit">Edit Profile</a>

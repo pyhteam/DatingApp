@@ -1,30 +1,50 @@
 using System.Text.Json;
 using API.Entities;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace API.Data
 {
     public class Seed
     {
-        public static int SeedUsers(DataContext dataContext)
+        public async static Task<int> SeedUsers(
+            UserManager<AppUser> userManager,
+            RoleManager<AppRole> roleManager
+            )
         {
-            if (dataContext.Users.Any())
+            if (userManager.Users.Any())
             {
                 return 0;
             }
-            var userData = System.IO.File.ReadAllText(@"Data\UserSeedData.json");
+            var userData = File.ReadAllText(@"Data\UserSeedData.json");
             var users = JsonSerializer.Deserialize<List<AppUser>>(userData);
-            using var hmac = new System.Security.Cryptography.HMACSHA512();
+            if (users == null)
+            {
+                return 0;
+            }
+            var roles = new List<AppRole>
+            {
+                new AppRole(){ Name="Member"},
+                new AppRole(){ Name="Admin"},
+                new AppRole(){ Name="Moderator"},
+            };
+            foreach (var role in roles)
+            {
+                await roleManager.CreateAsync(role);
+            }
+
             foreach (var user in users)
             {
                 user.UserName = user.UserName.ToLower();
-                user.PasswordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes("123456"));
-                user.PasswordSalt = hmac.Key;
-
-                dataContext.Users.Add(user);
+                await userManager.CreateAsync(user, "Abc12345@");
+                await userManager.AddToRoleAsync(user, "Member");
             }
-
-            return dataContext.SaveChanges();
+            var admin = new AppUser
+            {
+                UserName = "admin"
+            };
+            await userManager.CreateAsync(admin, "Abc12345@");
+            await userManager.AddToRolesAsync(admin, new[] { "Admin", "Moderator" });
+            return users.Count;
         }
     }
 }
