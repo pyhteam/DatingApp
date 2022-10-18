@@ -21,6 +21,13 @@ namespace API.Interfaces
             _mapper = mapper;
             _context = context;
         }
+
+        public void AddGroup(Group group)
+        {
+            _context.Groups.Add(group);
+            _context.SaveChanges();
+        }
+
         public void AddMessage(Message message)
         {
             _context.Messages.Add(message);
@@ -31,12 +38,50 @@ namespace API.Interfaces
             _context.Messages.Update(message);
         }
 
+        public async Task<Connection> GetConnection(string connectionId)
+        {
+            return await _context.Connections.FindAsync(connectionId);
+        }
+
+        public async Task<Group> GetGroupForConnection(string connectionId)
+        {
+            return await _context.Groups
+                .Include(c => c.Connections)
+                .Where(c => c.Connections.Any(x => x.ConnectionId == connectionId))
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<Message> GetMessage(int id)
         {
             return await _context.Messages
             .Include(u => u.Sender).ThenInclude(p => p.Photos)
             .Include(u => u.Recipient).ThenInclude(p => p.Photos)
-            .SingleOrDefaultAsync(x=>x.Id == id);
+            .SingleOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<Group> GetMessageForGroup(string groupName)
+        {
+            var group = await _context.Groups
+            .Include(c => c.Connections)
+            .FirstOrDefaultAsync(x => x.Name == groupName);
+            return group;
+
+        }
+
+        public string GetMessageGroup(string groupName)
+        {
+            // var group = _context.MessageGroups
+            // .Include(x => x.Connections)
+            // .FirstOrDefault(x => x.Name == groupName);
+
+            // if (group == null)
+            // {
+            //     group = new MessageGroup(groupName);
+            //     _context.MessageGroups.Add(group);
+            // }
+
+            // return group.Name;
+            return "sdf";
         }
 
         public async Task<PagedList<MessageDto>> GetMessagesForUser(MessageParams messageParams)
@@ -50,7 +95,7 @@ namespace API.Interfaces
                 "Outbox" => query.Where(u => u.SenderUsername == messageParams.Username && u.SenderDeleted == false),
                 _ => query.Where(u => u.RecipientUsername == messageParams.Username && u.RecipientDeleted == false && u.DateRead == null)
             };
-             var messages = query.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
+            var messages = query.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
             return await PagedList<MessageDto>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
         }
 
@@ -74,6 +119,11 @@ namespace API.Interfaces
                 await _context.SaveChangesAsync();
             }
             return messages;
+        }
+
+        public void RemoveConnection(Connection connection)
+        {
+            _context.Connections.Remove(connection);
         }
 
         public async Task<bool> SaveAllAsync()

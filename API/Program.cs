@@ -6,6 +6,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using API.Entities;
+using API.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ builder.Services.AddControllers();
 builder.Services.AddCors();
 // Add Authentication
 builder.Services.AddIdentityService(builder.Configuration);
+// Add SignalR
+builder.Services.AddSignalR();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
@@ -87,14 +90,18 @@ app.UseMiddleware<ExceptionMiddleware>(); // Custom middleware
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors(
-    options => options.AllowAnyOrigin()
-        .AllowAnyMethod()
+    options => options.AllowAnyMethod()
         .AllowAnyHeader()
+        .SetIsOriginAllowed(origin => true) // allow any origin
+        .AllowCredentials() // for signalR
+        
 
 );
 app.UseAuthentication(); // Enable authentication
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<PresenceHub>("hubs/presence");
+app.MapHub<MessageHub>("hubs/message");
 
 app.Run();
