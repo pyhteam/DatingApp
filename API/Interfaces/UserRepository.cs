@@ -33,6 +33,14 @@ namespace API.Interfaces
             .SingleOrDefaultAsync(x => x.Username == userName);
         }
 
+        public async Task<string> GetUserGender(string userName)
+        {
+            return await _context.Users
+            .Where(x => x.UserName.Equals(userName))
+            .Select(x => x.Gender)
+            .FirstOrDefaultAsync();
+        }
+
         public async Task<PagedList<MemberDto>> GetUsersAsync(UserParams userParams)
         {
             var query = _context.Users
@@ -56,11 +64,6 @@ namespace API.Interfaces
             return await PagedList<MemberDto>.CreateAsync(query.ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
             .AsNoTracking(), userParams.PageNumber, userParams.PageSize);
 
-        }
-
-        public async Task<bool> SaveAllAsync()
-        {
-            return await _context.SaveChangesAsync() > 0;
         }
 
         public void Update(MemberDto user)

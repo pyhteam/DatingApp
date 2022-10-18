@@ -40,8 +40,9 @@ export class MemberEditComponent implements OnInit {
   }
 
   loadMember() {
+
     this.meberService
-      .getByUsername(this.user.username)
+      .getByUsername(this.user.userName)
       .subscribe((member) => (this.member = member));
   }
 

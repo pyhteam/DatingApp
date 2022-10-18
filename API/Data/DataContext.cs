@@ -3,6 +3,8 @@ using API.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace API.Data
 {
@@ -57,7 +59,38 @@ namespace API.Data
                 .HasOne(u => u.Recipient)
                 .WithMany(m => m.MessagesReceived)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.ApplyUtcDateConverter();
         }
 
+    }
+}
+public static class UtcDateAnnotation
+{
+    private const string AnnotationName = "IsUtc";
+    private static readonly ValueConverter<DateTime, DateTime> UtcConverter = new ValueConverter<DateTime, DateTime>(
+        v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+    private static readonly ValueConverter<DateTime?, DateTime?> UtcNullableConverter = new ValueConverter<DateTime?, DateTime?>(
+        v => v, v => v == null ? v : DateTime.SpecifyKind(v.Value, DateTimeKind.Utc));
+
+    public static Boolean IsUtc(this IMutableProperty property) =>
+        property[AnnotationName] as Boolean? == true;
+
+    public static void ApplyUtcDateConverter(this ModelBuilder builder)
+    {
+        foreach (var entityType in builder.Model.GetEntityTypes())
+        {
+            foreach (var property in entityType.GetProperties())
+            {
+                if (property.ClrType == typeof(DateTime) && property.IsUtc())
+                {
+                    property.SetValueConverter(UtcConverter);
+                }
+                else if (property.ClrType == typeof(DateTime?) && property.IsUtc())
+                {
+                    property.SetValueConverter(UtcNullableConverter);
+                }
+            }
+        }
     }
 }

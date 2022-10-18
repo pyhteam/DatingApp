@@ -63,7 +63,7 @@ export class MembersService {
     );
   }
 
-  getByUsername(username: string) {
+  getByUsername(username: string) { 
     // lay memner detail trong cache
     const member = [...this.memberCache.values()]
       .reduce((arr, elem) => arr.concat(elem.result), [])

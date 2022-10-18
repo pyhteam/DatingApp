@@ -17,17 +17,18 @@ namespace API.Controllers
 
     public class AccountController : ApiBaseController
     {
+
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
-        private readonly IUserRepository _userRepository;
+
         public AccountController(UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
-            ITokenService tokenService, IMapper mapper,
-            IUserRepository userRepository)
+            ITokenService tokenService, IMapper mapper
+           )
         {
-            _userRepository = userRepository;
+
             _mapper = mapper;
             _userManager = userManager;
             _signInManager = signInManager;

@@ -15,11 +15,11 @@ namespace API.Extensions
             // Add DI
             services.AddSingleton<PresenceTracker>(); // add singleton for presence tracker
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<LogUserActive>();
             services.AddScoped<IPhotoService, PhotoService>();
-            services.AddScoped<ILikesRepository, LikesRepository>();
-            services.AddScoped<IMessageRepository, MessageRepository>();
+          
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             // Add AutoMapper
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 

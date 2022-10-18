@@ -29,7 +29,7 @@ export class UserManagementComponent implements OnInit {
     });
   }
   openRolesModal(user: User) {
-    const config: ModalOptions  = {
+    const config: ModalOptions = {
       class: 'modal-dialog-centered',
       initialState: {
         user: this.users,
@@ -37,7 +37,7 @@ export class UserManagementComponent implements OnInit {
       },
     };
 
-    this.bsModalRef = this.modalService.show(RolesModalComponent,config);
+    this.bsModalRef = this.modalService.show(RolesModalComponent, config);
     this.bsModalRef.content.updateSelectedRoles.subscribe((values) => {
       const rolesToUpdate = {
         roles: [
@@ -46,7 +46,7 @@ export class UserManagementComponent implements OnInit {
       };
       if (rolesToUpdate) {
         this.adminService
-          .updateUserRoles(user.username, rolesToUpdate.roles)
+          .updateUserRoles(user.userName, rolesToUpdate.roles)
           .subscribe(() => {
             user.roles = [...rolesToUpdate.roles];
             this.toastr.success('Roles updated successfully');

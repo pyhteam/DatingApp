@@ -17,14 +17,14 @@ namespace API.Controllers
     public class UsersController : ApiBaseController
     {
 
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IPhotoService _photoService;
-        public UsersController(IUserRepository userRepository, IMapper mapper, IPhotoService photoService)
+        public UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoService photoService)
         {
             _photoService = photoService;
             _mapper = mapper;
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
         }
 
 
@@ -34,13 +34,16 @@ namespace API.Controllers
         [Route("get-all")]
         public async Task<ActionResult<IEnumerable<MemberDto>>> Get([FromQuery] UserParams userParmas)
         {
-            var user = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
+            var gender = await _unitOfWork.UserRepository.GetUserGender(User.GetUsername());
             userParmas.CurrentUsername = User.GetUsername();
-            var users = await _userRepository.GetUsersAsync(userParmas);
+            if (string.IsNullOrEmpty(userParmas.Gender))
+            {
+                userParmas.Gender = gender == "male" ? "female" : "male";
+            }
+
+            var users = await _unitOfWork.UserRepository.GetUsersAsync(userParmas);
             Response.AddPaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
             return Ok(users);
-
-
         }
 
         // GET api/<UsersController>/5
@@ -49,7 +52,7 @@ namespace API.Controllers
         [Route("get/{id}")]
         public async Task<ActionResult<MemberDto>> Get(int id)
         {
-            var user = await _userRepository.GetUserByIdAsync(id);
+            var user = await _unitOfWork.UserRepository.GetUserByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
@@ -61,7 +64,7 @@ namespace API.Controllers
         [Route("get-by-username/{userName}", Name = "GetUser")]
         public async Task<ActionResult<MemberDto>> Get(string userName)
         {
-            var user = await _userRepository.GetUserByUserNameAsync(userName);
+            var user = await _unitOfWork.UserRepository.GetUserByUserNameAsync(userName);
             if (user == null)
             {
                 return NotFound();
@@ -82,7 +85,7 @@ namespace API.Controllers
         public async Task<ActionResult> Put(MemberUpdateDto memberUpdateDto)
         {
             string username = User.FindFirst(ClaimTypes.Name)?.Value;
-            var user = await _userRepository.GetUserByUserNameAsync(username);
+            var user = await _unitOfWork.UserRepository.GetUserByUserNameAsync(username);
             if (user == null)
             {
                 return NotFound();
@@ -93,8 +96,8 @@ namespace API.Controllers
             user.Introduction = memberUpdateDto.Introduction;
             user.LookingFor = memberUpdateDto.LookingFor;
 
-            _userRepository.Update(user);
-            if (await _userRepository.SaveAllAsync())
+            _unitOfWork.UserRepository.Update(user);
+            if (await _unitOfWork.Complete())
             {
                 return NoContent();
             }
@@ -106,7 +109,7 @@ namespace API.Controllers
         [Route("add-photo")]
         public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
         {
-            var user = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
+            var user = await _unitOfWork.UserRepository.GetUserByUserNameAsync(User.GetUsername());
             if (user == null)
             {
                 return NotFound();
@@ -138,7 +141,7 @@ namespace API.Controllers
         [Route("set-main-photo/{photoId}")]
         public async Task<ActionResult> SetMainPhoto(int photoId)
         {
-            var user = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
+            var user = await _unitOfWork.UserRepository.GetUserByUserNameAsync(User.GetUsername());
             if (user == null)
             {
                 return NotFound();
@@ -168,7 +171,7 @@ namespace API.Controllers
         [Route("delete-photo/{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var user = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
+            var user = await _unitOfWork.UserRepository.GetUserByUserNameAsync(User.GetUsername());
             if (user == null)
             {
                 return NotFound();
